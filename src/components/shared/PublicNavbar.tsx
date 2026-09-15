@@ -25,12 +25,12 @@ const PublicNavbar = () => {
   return (
     <header className="sticky top-0">
       <div>
-        <nav className="bg-gray-800">
+        <nav className="bg-black border-b border-gray-700">
           <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
                 <Link href="/" className="text-white font-bold text-xl ">
-                  DGM_HealCare
+                  DGM_HealthCare...
                 </Link>
               </div>
               <nav className="hidden md:block">
