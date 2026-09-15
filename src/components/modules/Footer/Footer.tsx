@@ -178,6 +178,7 @@ export function Footer() {
           <a
             href="tel:+911234567890"
             className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-1.5 text-sm font-semibold text-red-600 shadow transition hover:bg-red-50"
+            aria-label="Call emergency number"
           >
             <PhoneCall className="h-4 w-4" aria-hidden />
             Call +8801756959451
