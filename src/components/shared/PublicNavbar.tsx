@@ -2,17 +2,14 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
 
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Menu } from "lucide-react";
 
 const PublicNavbar = () => {
   const navItems = [
@@ -71,29 +68,38 @@ const PublicNavbar = () => {
       {/* mobile menu button */}
       <div className="md:hidden flex items-center justify-between bg-gray-800 px-4 py-2">
         <Sheet>
-          <SheetTrigger render={<Button variant="outline">Open</Button>} />
+          <SheetTrigger
+            render={
+              <Button variant="outline">
+                <Menu />
+              </Button>
+            }
+          />
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
+              <SheetTitle>Navigation Menu</SheetTitle>
               <SheetDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
+                <nav className="flex flex-col space-y-4 mt-8">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="text-black hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </nav>
               </SheetDescription>
             </SheetHeader>
-            <div className="grid flex-1 auto-rows-min gap-6 px-4">
-              <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-name">Name</Label>
-                <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-username">Username</Label>
-                <Input id="sheet-demo-username" defaultValue="@peduarte" />
-              </div>
+            <div className="flex flex-col space-y-4 mt-8">
+              <Link
+                href="/login"
+                className="text-gray-300 hover:text-white px-3 ml-3.5 py-2 rounded-md text-sm font-medium"
+              >
+                <Button>Login</Button>
+              </Link>
             </div>
-            <SheetFooter>
-              <Button type="submit">Save changes</Button>
-              <SheetClose render={<Button variant="outline">Close</Button>} />
-            </SheetFooter>
           </SheetContent>
         </Sheet>
       </div>
