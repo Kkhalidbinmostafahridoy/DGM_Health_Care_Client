@@ -1,120 +1,10 @@
-// import Link from "next/link";
-// import { Button } from "../ui/button";
-// import {
-//   Sheet,
-//   SheetContent,
-//   SheetDescription,
-//   SheetHeader,
-//   SheetTitle,
-//   SheetTrigger,
-// } from "../ui/sheet";
-
-// import { Menu } from "lucide-react";
-
-// const PublicNavbar = () => {
-//   const navItems = [
-//     { name: "Home", href: "/" },
-//     { name: "Consultation", href: "/consultation" },
-//     { name: "Health Plans", href: "/health-plans" },
-//     { name: "Diagnosis", href: "/diagnosis" },
-//     { name: "NGO's", href: "/ngo's" },
-//     { name: "Blog", href: "/blog" },
-//     { name: "Contact", href: "/contact" },
-//   ];
-
-//   return (
-//     <header className="sticky top-0">
-//       <div>
-//         <nav className="bg-black border-b border-gray-700">
-//           <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-//             <div className="flex items-center justify-between h-16">
-//               <div className="flex items-center">
-//                 <Link href="/" className="text-white font-bold text-xl ">
-//                   DGM_HealthCare...
-//                 </Link>
-//               </div>
-//               <nav className="hidden md:block">
-//                 <ul className="flex space-x-4">
-//                   {navItems.map((item) => (
-//                     <li key={item.name}>
-//                       <Link
-//                         href={item.href}
-//                         className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-//                       >
-//                         {item.name}
-//                       </Link>
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </nav>
-//               <div className="hidden md:block">
-//                 <Link
-//                   href="/login"
-//                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-//                 >
-//                   <Button>Login</Button>
-//                 </Link>
-//                 {/* <Link
-//                 href="/register"
-//                 className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-//               >
-//                 <Button>Register</Button>
-//               </Link> */}
-//               </div>
-//             </div>
-//           </div>
-//         </nav>
-//       </div>
-//       {/* mobile menu button */}
-//       <div className="md:hidden flex items-center justify-between bg-gray-800 px-4 py-2">
-//         <Sheet>
-//           <SheetTrigger
-//             render={
-//               <Button variant="outline">
-//                 <Menu />
-//               </Button>
-//             }
-//           />
-//           <SheetContent>
-//             <SheetHeader>
-//               <SheetTitle>Navigation Menu</SheetTitle>
-//               <SheetDescription>
-//                 <nav className="flex flex-col space-y-4 mt-8">
-//                   {navItems.map((item) => (
-//                     <Link
-//                       key={item.name}
-//                       href={item.href}
-//                       className="text-black hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-//                     >
-//                       {item.name}
-//                     </Link>
-//                   ))}
-//                 </nav>
-//               </SheetDescription>
-//             </SheetHeader>
-//             <div className="flex flex-col space-y-4 mt-8">
-//               <Link
-//                 href="/login"
-//                 className="text-gray-300 hover:text-white px-3 ml-3.5 py-2 rounded-md text-sm font-medium"
-//               >
-//                 <Button>Login</Button>
-//               </Link>
-//             </div>
-//           </SheetContent>
-//         </Sheet>
-//       </div>
-//     </header>
-//   );
-// };
-
-// export default PublicNavbar;
-
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, MapPin, Menu, PhoneCall } from "lucide-react";
+import { CalendarCheck, Menu, PhoneCall } from "lucide-react";
 
 import { Button } from "../ui/button";
 import {
@@ -125,7 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { Logo } from "../modules/Logo/Logo";
+import logoImg from "../../../public/LogoImg/DGM2.png";
 const NAV_ITEMS = [
   { name: "Home", href: "/" },
   { name: "Consultation", href: "/consultation" },
@@ -148,7 +38,7 @@ export default function PublicNavbar() {
       {/* ----------------------------- Main navbar ----------------------------- */}
       <div className="border-b border-slate-200 bg-white/90 shadow-sm backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Logo />
+          <img src={logoImg.src} alt="DGM Logo" className="h-14 w-auto" />
 
           {/* Desktop links */}
           <nav aria-label="Main navigation" className="hidden lg:block">
@@ -173,14 +63,14 @@ export default function PublicNavbar() {
 
           {/* Desktop CTAs */}
           <div className="hidden items-center gap-2 lg:flex">
-            <Button asChild variant="outline" className="rounded-full">
+            <Button variant="outline" className="rounded-full">
               <Link href="/login">Login</Link>
             </Button>
           </div>
 
           {/* Mobile: menu trigger */}
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
+            <SheetTrigger>
               <Button
                 variant="outline"
                 size="icon"
@@ -193,9 +83,13 @@ export default function PublicNavbar() {
 
             <SheetContent side="right" className="w-80 overflow-y-auto">
               <SheetHeader className="border-b border-slate-100 pb-4 text-left">
-                <SheetTitle asChild>
+                <SheetTitle>
                   <div>
-                    <Logo />
+                    <img
+                      src={logoImg.src}
+                      alt="DGM Logo"
+                      className="h-14 w-auto"
+                    />
                   </div>
                 </SheetTitle>
                 <SheetDescription className="sr-only">
@@ -227,20 +121,13 @@ export default function PublicNavbar() {
 
               {/* Mobile CTAs */}
               <div className="flex flex-col gap-2 px-4 pt-6">
-                <Button
-                  asChild
-                  className="w-full rounded-full bg-sky-600 hover:bg-sky-500"
-                >
+                <Button className="w-full rounded-full bg-sky-600 hover:bg-sky-500">
                   <Link href="/appointments" onClick={() => setOpen(false)}>
                     <CalendarCheck className="mr-1.5 h-4 w-4" aria-hidden />
                     Book Appointment
                   </Link>
                 </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full rounded-full"
-                >
+                <Button variant="outline" className="w-full rounded-full">
                   <Link href="/login" onClick={() => setOpen(false)}>
                     Login
                   </Link>
