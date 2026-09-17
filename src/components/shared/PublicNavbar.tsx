@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalendarCheck, Menu, PhoneCall } from "lucide-react";
 
-import { Button } from "../ui/button";
 import {
   Sheet,
   SheetContent,
@@ -16,15 +15,23 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import logoImg from "../../../public/LogoImg/DGM2.png";
+
 const NAV_ITEMS = [
   { name: "Home", href: "/" },
   { name: "Consultation", href: "/consultation" },
   { name: "Health Plans", href: "/health-plans" },
   { name: "Diagnosis", href: "/diagnosis" },
+  { name: "Treatment", href: "/treatment" },
   { name: "NGOs", href: "/ngos" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
 ];
+
+/* Reusable button-style classes (since Base UI Button doesn't support asChild) */
+const btnPrimary =
+  "inline-flex items-center justify-center gap-1.5 rounded-full bg-sky-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-sky-500";
+const btnOutline =
+  "inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50";
 
 export default function PublicNavbar() {
   const pathname = usePathname();
@@ -38,7 +45,9 @@ export default function PublicNavbar() {
       {/* ----------------------------- Main navbar ----------------------------- */}
       <div className="border-b border-slate-200 bg-white/90 shadow-sm backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <img src={logoImg.src} alt="DGM Logo" className="h-14 w-auto" />
+          <Link href="/" aria-label="DGM HealthCare — Home">
+            <img src={logoImg.src} alt="DGM Logo" className="h-14 w-auto" />
+          </Link>
 
           {/* Desktop links */}
           <nav aria-label="Main navigation" className="hidden lg:block">
@@ -61,36 +70,31 @@ export default function PublicNavbar() {
             </ul>
           </nav>
 
-          {/* Desktop CTAs */}
+          {/* Desktop CTAs — plain styled Link, NO Button wrapper, NO asChild */}
           <div className="hidden items-center gap-2 lg:flex">
-            <Button variant="outline" className="rounded-full">
-              <Link href="/login">Login</Link>
-            </Button>
+            <Link href="/Login" className={btnOutline}>
+              Login
+            </Link>
           </div>
 
-          {/* Mobile: menu trigger */}
+          {/* Mobile trigger — SheetTrigger's OWN button, styled directly.
+              NO nested <Button>, NO asChild → single <button>, zero hydration errors */}
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger>
-              <Button
-                variant="outline"
-                size="icon"
-                className="lg:hidden"
-                aria-label="Open navigation menu"
-              >
-                <Menu className="h-5 w-5" aria-hidden />
-              </Button>
+            <SheetTrigger
+              className="inline-flex size-9 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 lg:hidden"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="h-5 w-5" aria-hidden />
             </SheetTrigger>
 
             <SheetContent side="right" className="w-80 overflow-y-auto">
               <SheetHeader className="border-b border-slate-100 pb-4 text-left">
                 <SheetTitle>
-                  <div>
-                    <img
-                      src={logoImg.src}
-                      alt="DGM Logo"
-                      className="h-14 w-auto"
-                    />
-                  </div>
+                  <img
+                    src={logoImg.src}
+                    alt="DGM Logo"
+                    className="h-14 w-auto"
+                  />
                 </SheetTitle>
                 <SheetDescription className="sr-only">
                   Main navigation menu
@@ -119,19 +123,25 @@ export default function PublicNavbar() {
                 </ul>
               </nav>
 
-              {/* Mobile CTAs */}
+              {/* Mobile CTAs — styled Links */}
               <div className="flex flex-col gap-2 px-4 pt-6">
-                <Button className="w-full rounded-full bg-sky-600 hover:bg-sky-500">
-                  <Link href="/appointments" onClick={() => setOpen(false)}>
-                    <CalendarCheck className="mr-1.5 h-4 w-4" aria-hidden />
-                    Book Appointment
-                  </Link>
-                </Button>
-                <Button variant="outline" className="w-full rounded-full">
-                  <Link href="/login" onClick={() => setOpen(false)}>
+                <Link
+                  href="/appointments"
+                  onClick={() => setOpen(false)}
+                  className={btnPrimary}
+                >
+                  <CalendarCheck className="h-4 w-4" aria-hidden />
+                  Book Appointment
+                </Link>
+                <div className="flex flex-col gap-2 px-4 pt-6">
+                  <Link
+                    href="/Login"
+                    onClick={() => setOpen(false)}
+                    className={btnOutline}
+                  >
                     Login
                   </Link>
-                </Button>
+                </div>
               </div>
 
               {/* Mobile emergency */}
