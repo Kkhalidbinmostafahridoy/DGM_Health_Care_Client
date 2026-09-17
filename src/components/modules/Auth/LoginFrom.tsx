@@ -994,7 +994,9 @@ import {
   Hash,
   PhoneCall,
   ArrowRight,
+  ArrowLeft,
   Loader2,
+  UserPlus,
   CheckCircle2,
   Users,
   Clock,
@@ -1239,6 +1241,8 @@ export const LoginForm: React.FC = () => {
         .dgm-spin-slow{animation:dgm-spin-slow 12s linear infinite}
         .dgm-shake{animation:dgm-shake .5s both}
         .dgm-fade{animation:dgm-fade .6s ease both}
+        @keyframes dgm-shimmer { 0%{background-position:0% 0} 100%{background-position:200% 0} }
+        .dgm-shimmer{background-size:200% 100%;animation:dgm-shimmer 3s linear infinite}
       `}</style>
 
       {/* ==================== LEFT: Visual Hero Panel ==================== */}
@@ -1424,8 +1428,23 @@ export const LoginForm: React.FC = () => {
             })}
           </div>
 
-          {/* ---------- Top bar: Live clock + 🌐 3D POWER FLIP BUTTON ---------- */}
+          {/* ---------- Top bar: ⬅️ Back to Home + Live clock + 🌐 3D POWER FLIP BUTTON ---------- */}
           <div className="mb-5 flex items-center justify-end gap-2">
+            {/* ⬅️ Back to Home */}
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              aria-label={L("Back to home", "হোমে ফিরে যান")}
+              className="group mr-auto flex items-center gap-2 rounded-full border border-slate-200 bg-white py-1.5 pl-1.5 pr-3.5 shadow-sm transition hover:border-teal-300 hover:shadow-md active:scale-95"
+            >
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-slate-100 text-slate-600 transition group-hover:-translate-x-0.5 group-hover:bg-teal-50 group-hover:text-teal-700">
+                <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
+              </span>
+              <span className="text-[11px] font-bold text-slate-700">
+                {L("Home", "হোম")}
+              </span>
+            </button>
+
             {now && (
               <span className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold tabular-nums text-slate-600 sm:flex">
                 <Clock className="h-3.5 w-3.5 text-teal-700" aria-hidden />
@@ -1482,16 +1501,27 @@ export const LoginForm: React.FC = () => {
             </button>
           </div>
 
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            {t.welcome}
-          </h1>
-          <p className="mt-1.5 text-sm text-slate-500">
-            {t.subtitle[role].before}
-            <span className="font-semibold text-teal-800">
-              {t.subtitle[role].highlight}
+          {/* ---------- ✨ Beautiful Welcome Header ---------- */}
+          <div className="mt-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-gradient-to-r from-teal-50 to-cyan-50 px-3 py-1 text-[10.5px] font-bold uppercase tracking-wider text-teal-700 shadow-sm">
+              <ShieldCheck className="h-3 w-3" aria-hidden />
+              {L("Secure Patient Portal", "সুরক্ষিত রোগী পোর্টাল")}
             </span>
-            {t.subtitle[role].after}
-          </p>
+            <h1 className="mt-2.5 text-[26px] font-black leading-tight tracking-tight text-slate-900">
+              {t.welcome}
+            </h1>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="h-1 w-12 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" />
+              <span className="h-1 w-3 rounded-full bg-teal-200" />
+            </div>
+            <p className="mt-2.5 text-sm leading-relaxed text-slate-500">
+              {t.subtitle[role].before}
+              <span className="rounded bg-teal-50 px-1 font-bold text-teal-800">
+                {t.subtitle[role].highlight}
+              </span>
+              {t.subtitle[role].after}
+            </p>
+          </div>
 
           {/* Role Cards — circular icon medallions */}
           <div className="mt-6 grid grid-cols-2 gap-2.5">
@@ -1891,19 +1921,44 @@ export const LoginForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Registration Footer Box */}
-          <div className="mt-5 rounded-xl border border-dashed border-teal-300 bg-teal-50/50 px-4 py-3 text-center">
-            <p className="text-xs text-slate-600">
-              {t.newHere}{" "}
-              <Link
-                href="/Registration"
-                className="font-bold text-teal-700 transition-colors hover:text-teal-900"
-              >
-                {t.createAccount}
-              </Link>
-            </p>
-            <p className="mt-1 text-[10.5px] text-slate-400">{t.freeReg}</p>
-          </div>
+          {/* ⭐⭐ CREATE PATIENT ACCOUNT — Eye-catching Gradient CTA */}
+          <Link
+            href="/Registration"
+            className="group relative mt-6 block overflow-hidden rounded-2xl shadow-lg shadow-teal-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-600/20"
+          >
+            {/* Animated shimmering gradient border */}
+            <div className="dgm-shimmer absolute inset-0 rounded-2xl bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600" />
+
+            {/* Card body */}
+            <div className="relative m-[2px] flex items-center gap-3.5 rounded-[14px] bg-white px-4 py-4 transition-colors duration-300 group-hover:bg-teal-50/50">
+              {/* Pulsing icon medallion */}
+              <span className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full bg-gradient-to-br from-teal-600 to-emerald-500 text-white shadow-lg shadow-teal-600/30">
+                <span className="absolute inset-0 animate-ping rounded-full bg-teal-400 opacity-25" />
+                <UserPlus className="relative h-5 w-5" aria-hidden />
+              </span>
+
+              {/* Text */}
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-sm font-black tracking-tight text-slate-900">
+                    {L("Create Patient Account", "রোগী অ্যাকাউন্ট তৈরি করুন")}
+                  </span>
+                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-amber-700">
+                    {L("Free", "ফ্রি")}
+                  </span>
+                </span>
+                <span className="mt-0.5 block truncate text-[11px] font-medium text-slate-500">
+                  {t.freeReg} · {L("Takes 30 seconds", "মাত্র ৩০ সেকেন্ড")}
+                </span>
+              </span>
+
+              {/* Arrow */}
+              <ArrowRight
+                className="h-5 w-5 shrink-0 text-teal-700 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden
+              />
+            </div>
+          </Link>
 
           {/* ⭐ Trust badge chips */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
