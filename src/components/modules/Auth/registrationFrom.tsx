@@ -33,13 +33,22 @@ import {
   Fingerprint,
   RefreshCw,
   UserPlus,
+  FileHeart,
+  Hash,
+  Building2,
+  Briefcase,
+  Banknote,
 } from "lucide-react";
+
 import { type Language } from "@/translations/loginTranslations";
 import { registerTranslations } from "@/Translations/registerTranslations";
 
 /* ============================================================
-   🌐 TRANSLATIONS (move to @/translations/registerTranslations if you prefer)
+   🌐 TRANSLATIONS — inline so this file is self-contained.
+   (You can move this block to @/translations/registerTranslations.ts later)
 ============================================================ */
+export type RegRole = "patient" | "doctor";
+
 export interface RegisterTranslations {
   brand: string;
   brandTagline: string;
@@ -52,7 +61,9 @@ export interface RegisterTranslations {
   subtitle: { before: string; highlight: string; after: string };
   haveAccount: string;
   signIn: string;
-  steps: [string, string, string];
+  chooseRole: string;
+  roles: Record<RegRole, { title: string; desc: string }>;
+  steps: Record<RegRole, [string, string, string]>;
   labels: {
     fullName: string;
     fullNamePh: string;
@@ -72,6 +83,22 @@ export interface RegisterTranslations {
   };
   genders: [string, string, string];
   districts: string[];
+  doctor: {
+    bmdc: string;
+    bmdcPh: string;
+    specialization: string;
+    specializationPh: string;
+    specializations: string[];
+    hospital: string;
+    hospitalPh: string;
+    experience: string;
+    experiencePh: string;
+    fee: string;
+    feePh: string;
+    years: string;
+    feeUnit: string;
+    bmdcNote: string;
+  };
   bloodNote: string;
   passwordHint: string;
   matchOk: string;
@@ -90,6 +117,7 @@ export interface RegisterTranslations {
   errors: {
     step1: string;
     step2: string;
+    step2Doctor: string;
     passwordLen: string;
     match: string;
     terms: string;
@@ -98,13 +126,14 @@ export interface RegisterTranslations {
   back: string;
   create: string;
   creating: string;
-  protectedNote: string;
   success: {
     title: string;
     msg: string;
     resend: string;
     resent: string;
     goLogin: string;
+    doctorTitle: string;
+    doctorMsg: string;
   };
   trustBio: string;
   needHelp: string;
@@ -158,6 +187,17 @@ export const RegistrationForm: React.FC = () => {
     return () => clearInterval(id);
   }, []);
 
+  /* ================= 🆕 ROLE STATE ================= */
+  const [role, setRole] = useState<RegRole>("patient");
+  const isDoctor = role === "doctor";
+
+  const switchRole = (r: RegRole) => {
+    if (r === role) return;
+    setRole(r);
+    setStep(0);
+    setError("");
+  };
+
   /* ================= FORM STATE ================= */
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
@@ -170,6 +210,13 @@ export const RegistrationForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
+
+  /* Doctor fields */
+  const [bmdc, setBmdc] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [hospital, setHospital] = useState("");
+  const [experience, setExperience] = useState("");
+  const [fee, setFee] = useState("");
 
   const [showPw, setShowPw] = useState(false);
   const [showPw2, setShowPw2] = useState(false);
@@ -194,8 +241,19 @@ export const RegistrationForm: React.FC = () => {
     );
   }, [dob]);
 
-  const step1Ok = nameOk && emailOk && phoneOk && !!dob && genderIdx !== null;
-  const step2Ok = !!blood && districtIdx !== "";
+  const bmdcOk = /^[A-Za-z0-9-]{5,15}$/.test(bmdc);
+  const hospitalOk = hospital.trim().length >= 3;
+  const experienceOk =
+    experience !== "" && Number(experience) >= 0 && Number(experience) <= 70;
+  const feeOk = fee !== "" && Number(fee) > 0;
+
+  const step1Ok = isDoctor
+    ? nameOk && emailOk && phoneOk && genderIdx !== null
+    : nameOk && emailOk && phoneOk && !!dob && genderIdx !== null;
+
+  const step2Ok = isDoctor
+    ? bmdcOk && !!specialization && hospitalOk && experienceOk && feeOk
+    : !!blood && districtIdx !== "";
 
   const strength = useMemo(() => {
     if (!password) return 0;
@@ -233,7 +291,8 @@ export const RegistrationForm: React.FC = () => {
   const next = () => {
     setError("");
     if (step === 0 && !step1Ok) return setError(t.errors.step1);
-    if (step === 1 && !step2Ok) return setError(t.errors.step2);
+    if (step === 1 && !step2Ok)
+      return setError(isDoctor ? t.errors.step2Doctor : t.errors.step2);
     setStep((s) => s + 1);
   };
 
@@ -259,12 +318,15 @@ export const RegistrationForm: React.FC = () => {
     else handleFinal();
   };
 
+  const stepLabels = t.steps[role];
+
   /* ================= SUCCESS VIEW ================= */
   if (done) {
     return (
       <div
-        id="Registration-From"
-        className={`min-h-screen bg-slate-100 antialiased lg:flex ${lang === "bn" ? "font-bengali" : ""}`}
+        className={`min-h-screen bg-slate-100 antialiased lg:flex ${
+          lang === "bn" ? "font-bengali" : ""
+        }`}
       >
         <style>{`@keyframes dgm-pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}@keyframes dgm-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes dgm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.dgm-pop{animation:dgm-pop .6s cubic-bezier(.34,1.56,.64,1) both}.dgm-fade{animation:dgm-fade .6s ease both}.dgm-float{animation:dgm-float 6s ease-in-out infinite}`}</style>
 
@@ -303,17 +365,37 @@ export const RegistrationForm: React.FC = () => {
               <div className="dgm-pop relative mx-auto mb-4 h-20 w-20">
                 <span className="absolute inset-0 animate-ping rounded-full bg-emerald-300 opacity-40" />
                 <span className="relative grid h-full w-full place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-600/30">
-                  <CheckCircle2 className="h-9 w-9" aria-hidden />
+                  {isDoctor ? (
+                    <BadgeCheck className="h-9 w-9" aria-hidden />
+                  ) : (
+                    <CheckCircle2 className="h-9 w-9" aria-hidden />
+                  )}
                 </span>
               </div>
 
               <h2 className="text-xl font-bold text-slate-900">
-                {t.success.title}
+                {isDoctor ? t.success.doctorTitle : t.success.title}
               </h2>
               <p className="mt-2 text-sm text-slate-600">
-                {t.success.msg}{" "}
-                <span className="font-bold text-teal-800">{email}</span>
+                {isDoctor ? (
+                  t.success.doctorMsg
+                ) : (
+                  <>
+                    {t.success.msg}{" "}
+                    <span className="font-bold text-teal-800">{email}</span>
+                  </>
+                )}
               </p>
+
+              {isDoctor && (
+                <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-left text-[11px] font-medium text-amber-800">
+                  <Clock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                  {L(
+                    "BMDC verification in progress · typically 24 hours",
+                    "বিএমডিসি ভেরিফিকেশন চলছে · সাধারণত ২৪ ঘণ্টা",
+                  )}
+                </div>
+              )}
 
               {notice && (
                 <div className="mt-3 flex items-center justify-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
@@ -349,7 +431,10 @@ export const RegistrationForm: React.FC = () => {
   /* ================= MAIN REGISTRATION VIEW ================= */
   return (
     <div
-      className={`min-h-screen bg-slate-100 antialiased lg:flex ${lang === "bn" ? "font-bengali" : ""}`}
+      id="registration-form"
+      className={`min-h-screen bg-slate-100 antialiased lg:flex ${
+        lang === "bn" ? "font-bengali" : ""
+      }`}
     >
       <style>{`
         @keyframes dgm-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
@@ -463,7 +548,7 @@ export const RegistrationForm: React.FC = () => {
         <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan-200/40 blur-3xl" />
 
         <div className="relative z-10 w-full max-w-md animate-fade-up">
-          {/* Mobile header + stats */}
+          {/* Mobile header + mini stats */}
           <div className="mb-6 flex items-center gap-2.5 lg:hidden">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-800">
               <Stethoscope className="h-5 w-5 text-teal-300" aria-hidden />
@@ -505,11 +590,13 @@ export const RegistrationForm: React.FC = () => {
             <button
               type="button"
               onClick={() => changeLang(lang === "en" ? "bn" : "en")}
-              aria-label={t.langLabel}
+              aria-label={t.langLabel || "Toggle Language"}
               className="group relative h-10 w-40 rounded-full transition-transform duration-300 hover:scale-[1.03] active:scale-95 [perspective:1000px] [transform-style:preserve-3d]"
             >
               <div
-                className={`relative h-full w-full rounded-full transition-all duration-500 [transform-style:preserve-3d] ${lang === "bn" ? "[transform:rotateX(180deg)]" : ""}`}
+                className={`relative h-full w-full rounded-full transition-all duration-500 [transform-style:preserve-3d] ${
+                  lang === "bn" ? "[transform:rotateX(180deg)]" : ""
+                }`}
               >
                 {/* FRONT (English) */}
                 <div className="absolute inset-0 flex items-center justify-between rounded-full border border-teal-500/30 bg-gradient-to-r from-teal-950 via-teal-900 to-teal-950 px-3.5 text-white shadow-md shadow-teal-950/20 [backface-visibility:hidden]">
@@ -566,9 +653,55 @@ export const RegistrationForm: React.FC = () => {
             </Link>
           </p>
 
-          {/* ---------- ⭕ CIRCULAR STEPPER ---------- */}
+          {/* ---------- 🆕 ROLE SELECTOR (Patient / Doctor) ---------- */}
+          <div className="mt-5">
+            <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700">
+              {t.chooseRole}
+            </span>
+            <div className="grid grid-cols-2 gap-2.5">
+              {(["patient", "doctor"] as RegRole[]).map((r) => {
+                const Icon = r === "patient" ? FileHeart : Stethoscope;
+                const active = role === r;
+                return (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => switchRole(r)}
+                    aria-pressed={active}
+                    className={`rounded-2xl border p-3 text-left transition-all duration-200 hover:-translate-y-0.5 ${
+                      active
+                        ? "border-teal-700 bg-teal-50 shadow-md shadow-teal-900/5 ring-2 ring-teal-600/20"
+                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                    }`}
+                  >
+                    <span
+                      className={`mb-2 grid h-9 w-9 place-items-center rounded-full transition-colors ${
+                        active
+                          ? "bg-teal-700 text-white"
+                          : "bg-slate-100 text-slate-400"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" aria-hidden />
+                    </span>
+                    <p
+                      className={`text-xs font-bold ${
+                        active ? "text-teal-900" : "text-slate-700"
+                      }`}
+                    >
+                      {t.roles[r].title}
+                    </p>
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-slate-500">
+                      {t.roles[r].desc}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ---------- ⭕ CIRCULAR STEPPER (role-aware) ---------- */}
           <div className="mb-6 mt-6 flex items-start">
-            {t.steps.map((label, i) => {
+            {stepLabels.map((label, i) => {
               const isDone = i < step;
               const active = i === step;
               return (
@@ -579,7 +712,9 @@ export const RegistrationForm: React.FC = () => {
                   {i > 0 && (
                     <div className="mr-2 mt-[17px] h-0.5 flex-1 overflow-hidden rounded-full bg-slate-200">
                       <div
-                        className={`h-full bg-teal-600 transition-all duration-500 ${i <= step ? "w-full" : "w-0"}`}
+                        className={`h-full bg-teal-600 transition-all duration-500 ${
+                          i <= step ? "w-full" : "w-0"
+                        }`}
                       />
                     </div>
                   )}
@@ -600,7 +735,9 @@ export const RegistrationForm: React.FC = () => {
                       )}
                     </span>
                     <span
-                      className={`text-center text-[9.5px] font-bold leading-tight ${active ? "text-teal-800" : "text-slate-400"}`}
+                      className={`text-center text-[9.5px] font-bold leading-tight ${
+                        active ? "text-teal-800" : "text-slate-400"
+                      }`}
                     >
                       {label}
                     </span>
@@ -740,37 +877,39 @@ export const RegistrationForm: React.FC = () => {
                   </div>
                 </div>
 
-                {/* DOB + age chip */}
-                <div>
-                  <div className="mb-1.5 flex items-center justify-between">
-                    <label
-                      htmlFor="reg-dob"
-                      className="block text-xs font-bold uppercase tracking-wider text-slate-700"
-                    >
-                      {t.labels.dob}
-                    </label>
-                    {age !== null && (
-                      <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-700">
-                        {t.ageWord}: {age} {t.yearsWord}
-                      </span>
-                    )}
+                {/* DOB — patients only */}
+                {!isDoctor && (
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <label
+                        htmlFor="reg-dob"
+                        className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+                      >
+                        {t.labels.dob}
+                      </label>
+                      {age !== null && (
+                        <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-700">
+                          {t.ageWord}: {age} {t.yearsWord}
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <Calendar
+                        className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                        aria-hidden
+                      />
+                      <input
+                        id="reg-dob"
+                        type="date"
+                        required
+                        max={today}
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-4 text-sm text-slate-800 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+                      />
+                    </div>
                   </div>
-                  <div className="relative">
-                    <Calendar
-                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-                      aria-hidden
-                    />
-                    <input
-                      id="reg-dob"
-                      type="date"
-                      required
-                      max={today}
-                      value={dob}
-                      onChange={(e) => setDob(e.target.value)}
-                      className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-4 text-sm text-slate-800 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
-                    />
-                  </div>
-                </div>
+                )}
 
                 {/* Gender pills */}
                 <div>
@@ -798,8 +937,187 @@ export const RegistrationForm: React.FC = () => {
               </div>
             )}
 
-            {/* ---------- STEP 2: Health Profile ---------- */}
-            {step === 1 && (
+            {/* ---------- STEP 2A: 🩺 DOCTOR — Professional Info ---------- */}
+            {step === 1 && isDoctor && (
+              <div className="dgm-fade space-y-4">
+                {/* BMDC number */}
+                <div>
+                  <label
+                    htmlFor="reg-bmdc"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                  >
+                    {t.doctor.bmdc}
+                  </label>
+                  <div className="relative">
+                    <Hash
+                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                      aria-hidden
+                    />
+                    <input
+                      id="reg-bmdc"
+                      type="text"
+                      required
+                      value={bmdc}
+                      onChange={(e) => setBmdc(e.target.value.toUpperCase())}
+                      placeholder={t.doctor.bmdcPh}
+                      className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-11 text-sm text-slate-800 placeholder-slate-400 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+                    />
+                    {bmdc && (
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2">
+                        {bmdcOk ? (
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-400" />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Specialization */}
+                <div>
+                  <label
+                    htmlFor="reg-spec"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                  >
+                    {t.doctor.specialization}
+                  </label>
+                  <div className="relative">
+                    <Stethoscope
+                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                      aria-hidden
+                    />
+                    <select
+                      id="reg-spec"
+                      required
+                      value={specialization}
+                      onChange={(e) => setSpecialization(e.target.value)}
+                      className="w-full appearance-none rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-10 text-sm text-slate-800 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+                    >
+                      <option value="" disabled>
+                        {t.doctor.specializationPh}
+                      </option>
+                      {t.doctor.specializations.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                      aria-hidden
+                    />
+                  </div>
+                </div>
+
+                {/* Hospital / Clinic */}
+                <div>
+                  <label
+                    htmlFor="reg-hospital"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                  >
+                    {t.doctor.hospital}
+                  </label>
+                  <div className="relative">
+                    <Building2
+                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                      aria-hidden
+                    />
+                    <input
+                      id="reg-hospital"
+                      type="text"
+                      required
+                      value={hospital}
+                      onChange={(e) => setHospital(e.target.value)}
+                      placeholder={t.doctor.hospitalPh}
+                      className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-11 text-sm text-slate-800 placeholder-slate-400 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+                    />
+                    {hospital && (
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2">
+                        {hospitalOk ? (
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-400" />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Experience + Fee */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label
+                      htmlFor="reg-exp"
+                      className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    >
+                      {t.doctor.experience}
+                    </label>
+                    <div className="relative">
+                      <Briefcase
+                        className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                        aria-hidden
+                      />
+                      <input
+                        id="reg-exp"
+                        type="number"
+                        required
+                        min={0}
+                        max={70}
+                        value={experience}
+                        onChange={(e) => setExperience(e.target.value)}
+                        placeholder={t.doctor.experiencePh}
+                        className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-12 text-sm text-slate-800 placeholder-slate-400 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+                      />
+                      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                        {t.doctor.years}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="reg-fee"
+                      className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    >
+                      {t.doctor.fee}
+                    </label>
+                    <div className="relative">
+                      <Banknote
+                        className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                        aria-hidden
+                      />
+                      <input
+                        id="reg-fee"
+                        type="number"
+                        required
+                        min={0}
+                        value={fee}
+                        onChange={(e) => setFee(e.target.value)}
+                        placeholder={t.doctor.feePh}
+                        className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-9 text-sm text-slate-800 placeholder-slate-400 transition-all focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+                      />
+                      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
+                        {t.doctor.feeUnit}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* BMDC verification note */}
+                <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50/60 px-3.5 py-3">
+                  <Info
+                    className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
+                    aria-hidden
+                  />
+                  <p className="text-[11px] leading-relaxed text-amber-900/80">
+                    {t.doctor.bmdcNote}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* ---------- STEP 2B: 🩸 PATIENT — Health Profile ---------- */}
+            {step === 1 && !isDoctor && (
               <div className="dgm-fade space-y-5">
                 {/* Blood group — circular red chips */}
                 <div>
@@ -951,7 +1269,9 @@ export const RegistrationForm: React.FC = () => {
                         ))}
                       </div>
                       <span
-                        className={`text-[10px] font-bold uppercase tracking-wide ${t.strength.text[strength - 1]}`}
+                        className={`text-[10px] font-bold uppercase tracking-wide ${
+                          t.strength.text[strength - 1]
+                        }`}
                       >
                         {t.strength.labels[strength - 1]}
                       </span>
@@ -1015,7 +1335,9 @@ export const RegistrationForm: React.FC = () => {
 
                   {confirmPassword.length > 0 && (
                     <p
-                      className={`mt-1.5 flex items-center gap-1 text-[11px] font-semibold ${matchOk ? "text-emerald-600" : "text-red-500"}`}
+                      className={`mt-1.5 flex items-center gap-1 text-[11px] font-semibold ${
+                        matchOk ? "text-emerald-600" : "text-red-500"
+                      }`}
                     >
                       {matchOk ? (
                         <CheckCircle2 className="h-3 w-3" aria-hidden />
@@ -1058,7 +1380,7 @@ export const RegistrationForm: React.FC = () => {
 
             {/* ---------- ⭕ CIRCULAR ACTION BUTTONS ---------- */}
             <div className="flex items-center justify-between pt-4">
-              {/* Back / Help circle (left) */}
+              {/* Back / Help (left) */}
               {step > 0 ? (
                 <button
                   type="button"
@@ -1163,7 +1485,7 @@ export const RegistrationForm: React.FC = () => {
                       : t.continueBtn}
                 </p>
                 <p className="text-[10px] font-medium text-slate-400">
-                  {L("Step", "ধাপ")} {step + 1}/3 · {t.steps[step]}
+                  {L("Step", "ধাপ")} {step + 1}/3 · {stepLabels[step]}
                 </p>
               </div>
             </div>
