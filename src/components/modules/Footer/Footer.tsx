@@ -388,7 +388,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import logoImg from "../../../../public/LogoImg/DGM2.png";
+import logoImg from "../../../../public/LogoImg/DGM3.png";
 
 /* ------------------------------ Data & Types ------------------------------ */
 

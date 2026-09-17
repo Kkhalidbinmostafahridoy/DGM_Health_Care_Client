@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
@@ -201,7 +202,7 @@ export function Hero() {
                   alt="DGM"
                   className="inline-block h-10 w-auto sm:h-12 lg:h-14"
                 />
-                <span className="relative inline-block bg-gradient-to-r from-purple-600 via-indigo-500 to-sky-600 bg-clip-text text-transparent">
+                <span className="relative inline-block bg-linear-to-r from-purple-600 via-indigo-500 to-sky-600 bg-clip-text text-transparent">
                   Top Priority
                   <svg
                     aria-hidden
@@ -231,18 +232,23 @@ export function Hero() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Button
                 size="lg"
-                className="rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 px-8 shadow-lg shadow-sky-600/25 transition-all hover:shadow-xl hover:shadow-indigo-600/30 hover:scale-[1.02]"
+                className="rounded-full bg-linear-to-r from-sky-600 to-indigo-600 px-8 shadow-lg shadow-sky-600/25 transition-all hover:shadow-xl hover:shadow-indigo-600/30 hover:scale-[1.02]"
               >
                 <Link href="/appointments">
-                  <CalendarCheck className="mr-2 h-5 w-5" />
-                  Book Appointment
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <div className="flex items-center gap-1.5">
+                    {" "}
+                    <CalendarCheck className="mr-2 h-5 w-5" />
+                    Book Appointment
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </div>
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="rounded-full px-8">
                 <Link href="/services">
-                  <PlayCircle className="mr-2 h-5 w-5" />
-                  Our Services
+                  <div className="flex *:items-center gap-1.5">
+                    <PlayCircle className="mr-2 h-5 w-5"> </PlayCircle>
+                    Our Services
+                  </div>
                 </Link>
               </Button>
             </div>
