@@ -1,6 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/purity */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -38,9 +51,10 @@ import {
   Building2,
   Briefcase,
   Banknote,
+  LogIn,
 } from "lucide-react";
 
-import { type Language } from "@/translations/loginTranslations";
+import { type Language } from "../../../Translations/loginTranslations";
 import { registerTranslations } from "@/Translations/registerTranslations";
 
 /* ============================================================
@@ -328,7 +342,10 @@ export const RegistrationForm: React.FC = () => {
           lang === "bn" ? "font-bengali" : ""
         }`}
       >
-        <style>{`@keyframes dgm-pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}@keyframes dgm-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes dgm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.dgm-pop{animation:dgm-pop .6s cubic-bezier(.34,1.56,.64,1) both}.dgm-fade{animation:dgm-fade .6s ease both}.dgm-float{animation:dgm-float 6s ease-in-out infinite}`}</style>
+        <style>{`@keyframes dgm-pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}@keyframes dgm-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes dgm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.dgm-pop{animation:dgm-pop .6s cubic-bezier(.34,1.56,.64,1) both} .dgm-fade{animation:dgm-fade .6s ease both}
+        @keyframes dgm-shimmer { 0%{background-position:0% 0} 100%{background-position:200% 0} }
+        .dgm-shimmer{background-size:200% 100%;animation:dgm-shimmer 3s linear infinite}
+      `}</style>
 
         <div className="flex w-full items-center justify-center px-5 py-10">
           <div className="dgm-fade w-full max-w-md">
@@ -491,41 +508,125 @@ export const RegistrationForm: React.FC = () => {
             </h2>
 
             <ul className="mt-6 space-y-3">
-              {t.benefits.map((b) => (
-                <li key={b} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2
-                    className="mt-0.5 h-4 w-4 shrink-0 text-teal-300"
-                    aria-hidden
-                  />
-                  <span className="text-teal-50/90">{b}</span>
-                </li>
-              ))}
+              {t.benefits.map(
+                (
+                  b:
+                    | boolean
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | Key
+                    | null
+                    | undefined,
+                ) => (
+                  <li
+                    key={b?.toString()}
+                    className="flex items-start gap-2.5 text-sm"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 h-4 w-4 shrink-0 text-teal-300"
+                      aria-hidden
+                    />
+                    <span className="text-teal-50/90">{String(b)}</span>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
 
           {/* Stats + Emergency */}
           <div className="animate-fade-up">
             <div className="mb-6 grid grid-cols-3 gap-3">
-              {t.stats.map((stat, i) => {
-                const Icon = STAT_ICONS[i];
-                return (
-                  <div
-                    key={stat.label}
-                    className="rounded-xl border border-white/10 bg-white/10 p-3 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
-                  >
-                    <Icon
-                      className="mb-1.5 h-4 w-4 text-teal-300"
-                      aria-hidden
-                    />
-                    <p className="text-lg font-bold leading-none">
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 text-[11px] text-teal-100/70">
-                      {stat.label}
-                    </p>
-                  </div>
-                );
-              })}
+              {t.stats.map(
+                (
+                  stat: {
+                    label:
+                      | boolean
+                      | Key
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                    value:
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | ReactPortal
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                  },
+                  i: string | number,
+                ) => {
+                  const Icon = STAT_ICONS[i];
+                  return (
+                    <div
+                      key={String(stat.label)}
+                      className="rounded-xl border border-white/10 bg-white/10 p-3 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+                    >
+                      <Icon
+                        className="mb-1.5 h-4 w-4 text-teal-300"
+                        aria-hidden
+                      />
+                      <p className="text-lg font-bold leading-none">
+                        {stat.value}
+                      </p>
+                      <p className="mt-1 text-[11px] text-teal-100/70">
+                        {String(stat.label)}
+                      </p>
+                    </div>
+                  );
+                },
+              )}
             </div>
             <a
               href="tel:+8801756959451"
@@ -558,21 +659,74 @@ export const RegistrationForm: React.FC = () => {
             </p>
           </div>
           <div className="mb-5 grid grid-cols-3 gap-2 rounded-2xl bg-gradient-to-r from-teal-800 to-teal-700 p-3 text-white lg:hidden">
-            {t.stats.map((stat, i) => {
-              const Icon = STAT_ICONS[i];
-              return (
-                <div key={stat.label} className="text-center">
-                  <Icon
-                    className="mx-auto mb-1 h-4 w-4 text-teal-300"
-                    aria-hidden
-                  />
-                  <p className="text-sm font-bold leading-none">{stat.value}</p>
-                  <p className="mt-0.5 text-[9px] text-teal-100/80">
-                    {stat.label}
-                  </p>
-                </div>
-              );
-            })}
+            {t.stats.map(
+              (
+                stat: {
+                  label:
+                    | boolean
+                    | Key
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                  value:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | ReactPortal
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                },
+                i: string | number,
+              ) => {
+                const Icon = STAT_ICONS[i];
+                return (
+                  <div key={i} className="text-center">
+                    <Icon
+                      className="mx-auto mb-1 h-4 w-4 text-teal-300"
+                      aria-hidden
+                    />
+                    <p className="text-sm font-bold leading-none">
+                      {stat.value}
+                    </p>
+                    <p className="mt-0.5 text-[9px] text-teal-100/80">
+                      {String(stat.label)}
+                    </p>
+                  </div>
+                );
+              },
+            )}
           </div>
 
           {/* Clock + 🌐 3D FLIP BUTTON */}
@@ -632,26 +786,69 @@ export const RegistrationForm: React.FC = () => {
             </button>
           </div>
 
-          {/* Title */}
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            {t.title}
-          </h1>
-          <p className="mt-1.5 text-sm text-slate-500">
-            {t.subtitle.before}
-            <span className="font-semibold text-teal-800">
-              {t.subtitle.highlight}
+          {/* ---------- ✨ Beautiful Header ---------- */}
+          <div className="mt-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-gradient-to-r from-teal-50 to-cyan-50 px-3 py-1 text-[10.5px] font-bold uppercase tracking-wider text-teal-700 shadow-sm">
+              <Sparkles className="h-3 w-3" aria-hidden />
+              {L(
+                "Free Registration · 3 Easy Steps",
+                "ফ্রি রেজিস্ট্রেশন · ৩টি সহজ ধাপ",
+              )}
             </span>
-            {t.subtitle.after}
-          </p>
-          <p className="mt-1 text-xs font-medium text-slate-400">
-            {t.haveAccount}{" "}
-            <Link
-              href="/login"
-              className="font-bold text-teal-700 hover:text-teal-900"
-            >
-              {t.signIn}
-            </Link>
-          </p>
+            <h1 className="mt-2.5 text-[26px] font-black leading-tight tracking-tight text-slate-900">
+              {t.title}
+            </h1>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="h-1 w-12 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" />
+              <span className="h-1 w-3 rounded-full bg-teal-200" />
+            </div>
+            <p className="mt-2.5 text-sm leading-relaxed text-slate-500">
+              {t.subtitle.before}
+              <span className="rounded bg-teal-50 px-1 font-bold text-teal-800">
+                {t.subtitle.highlight}
+              </span>
+              {t.subtitle.after}
+            </p>
+          </div>
+
+          {/* ⭐⭐ SIGN IN — Eye-catching CTA (already have account) */}
+          <Link
+            href="/Login"
+            className="group relative mt-5 block overflow-hidden rounded-2xl shadow-lg shadow-teal-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-600/20"
+          >
+            {/* Animated shimmering gradient border */}
+            <div className="dgm-shimmer absolute inset-0 rounded-2xl bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600" />
+
+            {/* Card body */}
+            <div className="relative m-[2px] flex items-center gap-3.5 rounded-[14px] bg-white px-4 py-3.5 transition-colors duration-300 group-hover:bg-teal-50/50">
+              {/* Pulsing icon medallion */}
+              <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-teal-600 to-emerald-500 text-white shadow-lg shadow-teal-600/30">
+                <span className="absolute inset-0 animate-ping rounded-full bg-teal-400 opacity-25" />
+                <LogIn className="relative h-5 w-5" aria-hidden />
+              </span>
+
+              {/* Text */}
+              <span className="min-w-0 flex-1">
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  {t.haveAccount}
+                </span>
+                <span className="mt-0.5 flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-black tracking-tight text-slate-900">
+                    {t.signIn}
+                  </span>
+                  <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-teal-700">
+                    {L("Existing user", "আগের ইউজার")}
+                  </span>
+                </span>
+              </span>
+
+              {/* Arrow */}
+              <ArrowRight
+                className="h-5 w-5 shrink-0 text-teal-700 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden
+              />
+            </div>
+          </Link>
 
           {/* ---------- 🆕 ROLE SELECTOR (Patient / Doctor) ---------- */}
           <div className="mt-5">
