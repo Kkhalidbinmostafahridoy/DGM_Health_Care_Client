@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
+
+import { LanguageProvider } from "@/Translations/language-provider";
+import { ReactNode } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,13 +20,19 @@ export const metadata: Metadata = {
   description: "A healthCare application built with Next.js ",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["bengali"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-bengali",
+  display: "swap",
+});
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    // keep your existing <html>/<body> className, just merge these in
+    <html lang="en" className={hindSiliguri.variable}>
+      <body className={hindSiliguri.variable}>
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

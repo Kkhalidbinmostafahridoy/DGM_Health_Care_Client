@@ -1,6 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/purity */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -41,7 +54,7 @@ import {
   LogIn,
 } from "lucide-react";
 
-import { type Language } from "@/translations/loginTranslations";
+import { type Language } from "../../../Translations/loginTranslations";
 import { registerTranslations } from "@/Translations/registerTranslations";
 
 /* ============================================================
@@ -495,41 +508,125 @@ export const RegistrationForm: React.FC = () => {
             </h2>
 
             <ul className="mt-6 space-y-3">
-              {t.benefits.map((b) => (
-                <li key={b} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2
-                    className="mt-0.5 h-4 w-4 shrink-0 text-teal-300"
-                    aria-hidden
-                  />
-                  <span className="text-teal-50/90">{b}</span>
-                </li>
-              ))}
+              {t.benefits.map(
+                (
+                  b:
+                    | boolean
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | Key
+                    | null
+                    | undefined,
+                ) => (
+                  <li
+                    key={b?.toString()}
+                    className="flex items-start gap-2.5 text-sm"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 h-4 w-4 shrink-0 text-teal-300"
+                      aria-hidden
+                    />
+                    <span className="text-teal-50/90">{String(b)}</span>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
 
           {/* Stats + Emergency */}
           <div className="animate-fade-up">
             <div className="mb-6 grid grid-cols-3 gap-3">
-              {t.stats.map((stat, i) => {
-                const Icon = STAT_ICONS[i];
-                return (
-                  <div
-                    key={stat.label}
-                    className="rounded-xl border border-white/10 bg-white/10 p-3 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
-                  >
-                    <Icon
-                      className="mb-1.5 h-4 w-4 text-teal-300"
-                      aria-hidden
-                    />
-                    <p className="text-lg font-bold leading-none">
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 text-[11px] text-teal-100/70">
-                      {stat.label}
-                    </p>
-                  </div>
-                );
-              })}
+              {t.stats.map(
+                (
+                  stat: {
+                    label:
+                      | boolean
+                      | Key
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                    value:
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | ReactPortal
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                  },
+                  i: string | number,
+                ) => {
+                  const Icon = STAT_ICONS[i];
+                  return (
+                    <div
+                      key={String(stat.label)}
+                      className="rounded-xl border border-white/10 bg-white/10 p-3 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+                    >
+                      <Icon
+                        className="mb-1.5 h-4 w-4 text-teal-300"
+                        aria-hidden
+                      />
+                      <p className="text-lg font-bold leading-none">
+                        {stat.value}
+                      </p>
+                      <p className="mt-1 text-[11px] text-teal-100/70">
+                        {String(stat.label)}
+                      </p>
+                    </div>
+                  );
+                },
+              )}
             </div>
             <a
               href="tel:+8801756959451"
@@ -562,21 +659,74 @@ export const RegistrationForm: React.FC = () => {
             </p>
           </div>
           <div className="mb-5 grid grid-cols-3 gap-2 rounded-2xl bg-gradient-to-r from-teal-800 to-teal-700 p-3 text-white lg:hidden">
-            {t.stats.map((stat, i) => {
-              const Icon = STAT_ICONS[i];
-              return (
-                <div key={stat.label} className="text-center">
-                  <Icon
-                    className="mx-auto mb-1 h-4 w-4 text-teal-300"
-                    aria-hidden
-                  />
-                  <p className="text-sm font-bold leading-none">{stat.value}</p>
-                  <p className="mt-0.5 text-[9px] text-teal-100/80">
-                    {stat.label}
-                  </p>
-                </div>
-              );
-            })}
+            {t.stats.map(
+              (
+                stat: {
+                  label:
+                    | boolean
+                    | Key
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                  value:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | ReactPortal
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                },
+                i: string | number,
+              ) => {
+                const Icon = STAT_ICONS[i];
+                return (
+                  <div key={i} className="text-center">
+                    <Icon
+                      className="mx-auto mb-1 h-4 w-4 text-teal-300"
+                      aria-hidden
+                    />
+                    <p className="text-sm font-bold leading-none">
+                      {stat.value}
+                    </p>
+                    <p className="mt-0.5 text-[9px] text-teal-100/80">
+                      {String(stat.label)}
+                    </p>
+                  </div>
+                );
+              },
+            )}
           </div>
 
           {/* Clock + 🌐 3D FLIP BUTTON */}

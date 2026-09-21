@@ -2,6 +2,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+html[lang="bn"] body {
+  font-family:
+    var(--font-bengali),
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
 
 /* ---------- Custom Bengali Font & Animation Utilities ---------- */
 .font-bengali {
