@@ -1,9 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Footer from "@/components/modules/Footer/Footer";
-import Hero from "@/components/modules/Home/Hero";
+
 import PublicNavbar from "@/components/shared/PublicNavbar";
+import Hero from "@/components/modules/home/Hero";
+import Footer from "@/components/modules/footer/Footer";
 
 const CommonLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
