@@ -440,8 +440,8 @@ export default function PublicNavbar() {
           {/* Desktop: 3D language toggle BESIDE Login */}
           <div className="hidden items-center gap-2 lg:flex">
             <LanguageToggle />
-            <Link href="/Login" className={btnOutline}>
-              {nav.login || "Login"}
+            <Link href="/login" className={btnOutline}>
+              {nav.login || "login"}
             </Link>
           </div>
 
@@ -504,7 +504,7 @@ export default function PublicNavbar() {
                   {nav.bookAppointment || "Book Appointment"}
                 </Link>
                 <Link
-                  href="/Login"
+                  href="/login"
                   onClick={() => setOpen(false)}
                   className={btnOutline}
                 >

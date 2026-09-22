@@ -54,7 +54,7 @@ import {
   LogIn,
 } from "lucide-react";
 
-import { type Language } from "../../../Translations/loginTranslations";
+import { type Language } from "../../../../Translations/loginTranslations";
 import { registerTranslations } from "@/Translations/registerTranslations";
 
 /* ============================================================
@@ -813,7 +813,7 @@ export const RegistrationForm: React.FC = () => {
 
           {/* ⭐⭐ SIGN IN — Eye-catching CTA (already have account) */}
           <Link
-            href="/Login"
+            href="/login"
             className="group relative mt-5 block overflow-hidden rounded-2xl shadow-lg shadow-teal-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-600/20"
           >
             {/* Animated shimmering gradient border */}

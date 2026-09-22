@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { RegistrationForm } from "@/components/modules/Auth/registrationFrom";
+import { LoginForm } from "./LoginFrom";
 
 export const metadata: Metadata = {
   title: "Login | DGM HealthCare",
   description: "Secure sign-in for patients and providers at DGM HealthCare",
 };
 
-export default function RegistrationPage() {
+export default function LoginPage() {
   return (
     <main>
-      <RegistrationForm />
+      <LoginForm />
     </main>
   );
 }

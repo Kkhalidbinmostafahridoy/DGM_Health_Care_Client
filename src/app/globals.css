@@ -50,6 +50,15 @@ html[lang="bn"] body {
   }
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-24px) scale(1.03);
+  }
+}
 .animate-float {
   animation: dgm-float 7s ease-in-out infinite;
 }
