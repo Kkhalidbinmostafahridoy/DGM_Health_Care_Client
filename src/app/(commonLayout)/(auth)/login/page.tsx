@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LoginForm } from "./LoginFrom";
+import { LoginForm } from "./loginFrom";
 
 export const metadata: Metadata = {
   title: "Login | DGM HealthCare",
