@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -944,7 +945,7 @@ export const LoginForm: React.FC = () => {
 
           {/* ⭐⭐ CREATE PATIENT ACCOUNT — Eye-catching Gradient CTA */}
           <Link
-            href="/Registration"
+            href="/registration"
             className="group relative mt-6 block overflow-hidden rounded-2xl shadow-lg shadow-teal-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-600/20"
           >
             {/* Animated shimmering gradient border */}
